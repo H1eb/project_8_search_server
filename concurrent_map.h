@@ -1,13 +1,10 @@
 #pragma once
 
 #include <cstdlib>
-#include <future>
 #include <map>
 #include <string>
 #include <vector>
 #include <mutex>
-
-using namespace std::string_literals;
 
 template <typename Key, typename Value>
 class ConcurrentMap {
@@ -18,7 +15,7 @@ private:
     };
 
 public:
-    static_assert(std::is_integral_v<Key>, "ConcurrentMap supports only integer keys"s);
+    static_assert(std::is_integral_v<Key>, "ConcurrentMap supports only integer keys");
 
     struct Access {
         std::lock_guard<std::mutex> guard;
@@ -37,12 +34,11 @@ public:
     }
 
     Access operator[](const Key& key){
-        auto& bucket = buckets_[static_cast<uint64_t>(key) % buckets_.size()];
-        return {key, bucket};
+        return {key, GetBucket(key)};
     }
 
     void erase(const Key& key){
-        auto& bucket = buckets_[static_cast<uint64_t>(key) % buckets_.size()];
+        Bucket& bucket = GetBucket(key);
         std::lock_guard guard(bucket.mutex);
         bucket.map.erase(key);
     }
@@ -58,4 +54,8 @@ public:
 
 private:
     std::vector<Bucket> buckets_;
+    
+    Bucket& GetBucket(const Key& key){
+        return buckets_[static_cast<uint64_t>(key) % buckets_.size()];
+    }
 };

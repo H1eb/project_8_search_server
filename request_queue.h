@@ -29,7 +29,7 @@ public:
 private:
     struct QueryResult{
         int timestamp;
-        int time_number_results;
+        int results;
     };
     std::deque<QueryResult> requests_;
     const SearchServer& search_server_;

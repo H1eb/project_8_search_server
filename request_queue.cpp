@@ -9,7 +9,7 @@ RequestQueue::RequestQueue(const SearchServer& search_server)
 void RequestQueue::AddRequest(int result){
 	++time_;
     while (!requests_.empty() && sec_in_day_ <= time_ - requests_.front().timestamp) {
-		if (0 == requests_.front().time_number_results) {
+		if (0 == requests_.front().results) {
 			--no_result_requests_;
 		}
 		requests_.pop_front();

@@ -141,7 +141,7 @@ tuple<std::vector<std::string_view>, DocumentStatus> SearchServer::MatchDocument
         return {{}, documents_.at(document_id).status};
     }
     
-    vector<string_view> matched_words;
+    vector<string_view> matched_words(query.plus_words.size());
     auto words_end = copy_if(
         execution::par,
         query.plus_words.begin(), query.plus_words.end(),
@@ -201,7 +201,7 @@ SearchServer::QueryWord SearchServer::ParseQueryWord(string_view text) const {
         text = text.substr(1);
     }
     if (text.empty() || text[0] == '-' || !IsValidWord(text)) {
-        throw invalid_argument("_Query word "s + string(text) + " is invalid");
+        throw invalid_argument("Query word "s + string(text) + " is invalid");
     }
 
     return {text, is_minus, IsStopWord(text)};
